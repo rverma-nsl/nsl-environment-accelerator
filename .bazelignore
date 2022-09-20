@@ -1,0 +1,16 @@
+node_modules
+bazel-out
+bazel-bin
+bazel-lib
+bazel-core
+bazel-testlogs
+cdk.out
+
+lib/cdk-plugin-assume-role/node_modules
+lib/common/node_modules
+lib/common-config/node_modules
+lib/common-outputs/node_modules
+lib/common-types/node_modules
+lib/config/node_modules
+lib/io-ts-annotations/node_modules
+lib/io-ts-json-schema-gen/node_modules

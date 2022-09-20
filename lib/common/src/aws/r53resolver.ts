@@ -1,0 +1,42 @@
+import aws from './aws-client';
+import {
+  AssociateResolverRuleRequest,
+  AssociateResolverRuleResponse,
+  ListResolverEndpointIpAddressesResponse,
+} from 'aws-sdk/clients/route53resolver';
+import {throttlingBackOff} from './backoff';
+
+export class Route53Resolver {
+  private readonly client: aws.Route53Resolver;
+
+  public constructor(credentials?: aws.Credentials) {
+    this.client = new aws.Route53Resolver({
+      credentials,
+    });
+  }
+
+  async getEndpointIpAddress(endpointId: string): Promise<ListResolverEndpointIpAddressesResponse> {
+    return throttlingBackOff(() =>
+      this.client.listResolverEndpointIpAddresses({ ResolverEndpointId: endpointId }).promise(),
+    );
+  }
+
+  /**
+   * to associate resolver rule
+   * @param resolverRuleId
+   * @param vpcId
+   * @param name
+   */
+  async associateResolverRule(
+    resolverRuleId: string,
+    vpcId: string,
+    name?: string,
+  ): Promise<AssociateResolverRuleResponse> {
+    const param: AssociateResolverRuleRequest = {
+      ResolverRuleId: resolverRuleId,
+      VPCId: vpcId,
+      Name: name,
+    };
+    return throttlingBackOff(() => this.client.associateResolverRule(param).promise());
+  }
+}
